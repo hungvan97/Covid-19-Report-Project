@@ -1,0 +1,13 @@
+{
+	"name": "ls_dls_covidreportingdes",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "destination covid data reporting",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://hungdvcovidreportingdl.dfs.core.windows.net/",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEYwNjJFRTBGLUM3OTYtNDE5MC1CMkM2LTZBMDVDQzQ5OTk5Q19kNTI3YTg5Mi00MDFhLTRhNjctOGEwMi0xYjU5ZmMzNmYzN2IiDQp9"
+		}
+	}
+}

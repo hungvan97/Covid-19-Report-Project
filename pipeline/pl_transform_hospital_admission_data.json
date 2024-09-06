@@ -1,0 +1,63 @@
+{
+	"name": "pl_transform_hospital_admission_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Transformation Hospital Admissions Data Flow",
+				"description": "perform Transformation on COVID Hospital Admission Case on Weekly and Daily Term",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_transform_hospital_admissions",
+						"type": "DataFlowReference",
+						"parameters": {
+							"sinkDailyFileName": {
+								"value": "'@{pipeline().parameters.sinkDailyFileName}'",
+								"type": "Expression"
+							},
+							"sinkWeeklyFileName": {
+								"value": "'@{pipeline().parameters.sinkWeeklyFileName}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SinkDaily": {
+								"fileName": "hospital_admission_daily.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"sinkDailyFileName": {
+				"type": "string",
+				"defaultValue": "hospital_admission_daily.csv"
+			},
+			"sinkWeeklyFileName": {
+				"type": "string",
+				"defaultValue": "hospital_admission_weekly.csv"
+			}
+		},
+		"folder": {
+			"name": "Transform"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-30T23:55:07Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "tr_ingest_ecdc_data",
+	"properties": {
+		"description": "Ingest data every day",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ingest_ecdc_data",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "pl_ingest_lookup_data",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-08-23T16:32:00",
+				"endTime": "2024-08-31T16:32:00",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}

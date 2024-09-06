@@ -1,0 +1,110 @@
+{
+	"name": "pl_sql_age_group_case_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Age Group Cases Data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Data Flow Age Group Cases Filter EU",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_transformed_age_group_cases",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sql_age_group_case",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Data Flow Age Group Cases Filter EU",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_filter_eu_age_group_cases",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"HospitalAdmissionsFromEurope": {
+								"fileName": {
+									"value": "@pipeline().parameters.sourceHospitalAdmissionsFile",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"sourceHospitalAdmissionsFile": {
+				"type": "string",
+				"defaultValue": "hospital_admission_daily.csv"
+			}
+		},
+		"folder": {
+			"name": "SQL Transfer"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-06T15:25:03Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

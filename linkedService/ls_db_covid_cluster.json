@@ -1,0 +1,13 @@
+{
+	"name": "ls_db_covid_cluster",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-2117788467523796.16.azuredatabricks.net",
+			"existingClusterId": "0828-112551-psenhweg",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEYwNjJFRTBGLUM3OTYtNDE5MC1CMkM2LTZBMDVDQzQ5OTk5Q18wYzM3NWU3Ny1lMmJiLTQ0YjEtODJiNy04ZjhmZTBhMGVkYzMiDQp9"
+		}
+	}
+}

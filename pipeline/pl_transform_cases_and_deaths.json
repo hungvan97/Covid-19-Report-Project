@@ -1,0 +1,53 @@
+{
+	"name": "pl_transform_cases_and_deaths",
+	"properties": {
+		"description": "contain Transformation on COVID Cases and Death Dataset ",
+		"activities": [
+			{
+				"name": "Execute Transformation Cases and Death Data Flow",
+				"description": "perform Transformation on COVID Cases and Death Dataset ",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_transform_cases_deaths",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CasesAndDeaths": {
+								"fileName": {
+									"value": "@pipeline().parameters.sinkFileName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"sinkFileName": {
+				"type": "string",
+				"defaultValue": "cases_deaths.csv"
+			}
+		},
+		"folder": {
+			"name": "Transform"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-09-01T16:47:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

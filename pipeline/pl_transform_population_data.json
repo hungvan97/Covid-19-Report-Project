@@ -1,0 +1,34 @@
+{
+	"name": "pl_transform_population_data",
+	"properties": {
+		"description": "transform Population By Age dataset",
+		"activities": [
+			{
+				"name": "Execute Population Transformation",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/covid/set-up/mount_storage"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_db_covid_cluster",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Transform"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-29T14:55:44Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,78 @@
+{
+	"name": "pl_sql_cases_and_deaths_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy cases and deaths",
+				"description": "Copy cases and deaths to SQL DataWarehouse",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_transformed_cases_and_deaths",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@pipeline().parameters.sourceFileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sql_cases_and_deaths",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"sourceFileName": {
+				"type": "string",
+				"defaultValue": "cases_deaths.csv"
+			}
+		},
+		"folder": {
+			"name": "SQL Transfer"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-08-30T23:58:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

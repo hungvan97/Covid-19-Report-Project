@@ -1,0 +1,131 @@
+{
+	"name": "df_transform_cases_deaths",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_raw_cases_and_deaths",
+						"type": "DatasetReference"
+					},
+					"name": "CasesAndDeathSource",
+					"description": "import data from Datasets \"ds_raw_cases_and_deaths\""
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_country_lookup_dl",
+						"type": "DatasetReference"
+					},
+					"name": "CountryLookup",
+					"description": "import data from ds_country_lookup_dl"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_transformed_cases_and_deaths",
+						"type": "DatasetReference"
+					},
+					"name": "CasesAndDeaths",
+					"description": "Sink storage COVID Cases and Death in each Europe Country"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterEuropeOnly",
+					"description": "Filtering rows using expressions on columns \"continent\", \"country_code\" to abstract only COVID case from Europe"
+				},
+				{
+					"name": "SelectOnlyRequiredFields",
+					"description": "Filter out column \"continent\", \"rate-14-days\""
+				},
+				{
+					"name": "PivotCounts",
+					"description": "Pivots row values (n values) into columns (n columns). Groups columns (indicator & daily_count) and aggregates data into columns (cases_count & death_count)"
+				},
+				{
+					"name": "SelectForSink",
+					"description": "select & rename Column for Sink"
+				},
+				{
+					"name": "LookupCountry",
+					"description": "Lookup on \"PivotCounts\" on \"CountryLookUp\""
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as string,",
+				"          indicator as string,",
+				"          daily_count as integer,",
+				"          date as date,",
+				"          rate_14_day as double,",
+				"          source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CasesAndDeathSource",
+				"source(output(",
+				"          country as string,",
+				"          country_code_2_digit as string,",
+				"          country_code_3_digit as string,",
+				"          continent as string,",
+				"          population as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CountryLookup",
+				"CasesAndDeathSource filter(continent == \"Europe\" && not(isNull(country_code))) ~> FilterEuropeOnly",
+				"FilterEuropeOnly select(mapColumn(",
+				"          country,",
+				"          country_code,",
+				"          population,",
+				"          indicator,",
+				"          daily_count,",
+				"          source,",
+				"          each(match(name=='date'),",
+				"               'reported_date' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> SelectOnlyRequiredFields",
+				"SelectOnlyRequiredFields pivot(groupBy(country,",
+				"          country_code,",
+				"          population,",
+				"          source,",
+				"          reported_date),",
+				"     pivotBy(indicator, ['confirmed cases', 'deaths']),",
+				"     count = sum(daily_count),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> PivotCounts",
+				"LookupCountry select(mapColumn(",
+				"          country = PivotCounts@country,",
+				"          country_code_2_digit,",
+				"          country_code_3_digit,",
+				"          population = PivotCounts@population,",
+				"          case_count = {countconfirmed cases},",
+				"          death_count = countdeaths,",
+				"          reported_date,",
+				"          source",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectForSink",
+				"PivotCounts, CountryLookup lookup(PivotCounts@country == CountryLookup@country,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupCountry",
+				"SelectForSink sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['cases_deaths.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> CasesAndDeaths"
+			]
+		}
+	}
+}
