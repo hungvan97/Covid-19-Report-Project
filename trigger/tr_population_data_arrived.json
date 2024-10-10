@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "trigger Pipeline pl_execute_population_pipelines when successful get HTTP GET response",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
