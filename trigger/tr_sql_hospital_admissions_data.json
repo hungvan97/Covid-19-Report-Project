@@ -2,7 +2,7 @@
 	"name": "tr_sql_hospital_admissions_data",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "pl_sql_hospital_admissions_daily_data",
