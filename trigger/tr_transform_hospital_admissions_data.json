@@ -2,7 +2,7 @@
 	"name": "tr_transform_hospital_admissions_data",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "pl_transform_hospital_admission_data",
